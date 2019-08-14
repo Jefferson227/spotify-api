@@ -6,6 +6,13 @@ const axios = require('axios');
 
 //Spotify variables
 const baseUrl = 'https://api.spotify.com/v1/search?q=muse&type=artist';
+const token = 'add token here';
+
+// Creating axios instance
+const instance = axios.create({
+  baseURL: baseUrl,
+  headers: { Authorization: `Bearer ${token}` }
+});
 
 //Create HTTP server and listen on port 3000 for requests
 const server = http.createServer((req, res) => {
@@ -14,15 +21,10 @@ const server = http.createServer((req, res) => {
   res.setHeader('Content-Type', 'text/plain');
   res.write('Hello World\n');
 
-  axios({
-    method: 'get',
-    url: baseUrl,
-    headers: {
-      Authorization: '<client id here>'
-    }
-  })
+  instance
+    .get(baseUrl)
     .then(response => {
-      res.write(response);
+      console.log(response);
     })
     .catch(err => {
       console.error(`There was an error during the API call: ${err}`);
