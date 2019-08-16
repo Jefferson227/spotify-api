@@ -3,10 +3,12 @@ const http = require('http');
 const hostname = '127.0.0.1';
 const port = 3000;
 const axios = require('axios');
+const dotenv = require('dotenv');
+dotenv.config();
 
 //Spotify variables
 const baseUrl = 'https://api.spotify.com/v1/search?q=muse&type=artist';
-const token = 'add token here';
+const token = process.env.CLIENT_ID;
 
 // Creating axios instance
 const instance = axios.create({
@@ -19,15 +21,24 @@ const server = http.createServer((req, res) => {
   //Set the response HTTP header with HTTP status and Content type
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
-  res.write('Hello World\n');
+  // res.write('Hello World\n');
 
   instance
     .get(baseUrl)
     .then(response => {
-      console.log(response);
+      res.write(
+        JSON.stringify(
+          response.data.artists.items.map(function(item) {
+            return item.name;
+          })
+        )
+      );
+      res.end();
     })
     .catch(err => {
       console.error(`There was an error during the API call: ${err}`);
+      res.write('{}');
+      res.end();
     });
 });
 
