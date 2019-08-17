@@ -26,13 +26,14 @@ const server = http.createServer((req, res) => {
   instance
     .get(baseUrl)
     .then(response => {
-      res.write(
-        JSON.stringify(
-          response.data.artists.items.map(function(item) {
-            return item.name;
-          })
-        )
-      );
+      const artists = response.data.artists.items.map(item => {
+        return {
+          id: item.id,
+          name: item.name
+        };
+      });
+
+      res.write(JSON.stringify(artists));
       res.end();
     })
     .catch(err => {
