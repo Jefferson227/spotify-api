@@ -1,15 +1,9 @@
 //Load HTTP module
+const service = require('./service');
 const express = require('express');
 const app = express();
 const hostname = '127.0.0.1';
 const port = 3000;
-const axios = require('axios');
-const dotenv = require('dotenv');
-dotenv.config();
-
-//Spotify variables
-const baseUrl = 'https://api.spotify.com/v1/search?q=muse&type=artist';
-const token = process.env.CLIENT_ID;
 
 app.get('/', function(req, res) {
   //Set the response HTTP header with HTTP status and Content type
@@ -17,14 +11,8 @@ app.get('/', function(req, res) {
   res.setHeader('Content-Type', 'text/plain');
   // res.write('Hello World\n');
 
-  // Creating axios instance
-  const instance = axios.create({
-    baseURL: baseUrl,
-    headers: { Authorization: `Bearer ${token}` }
-  });
-
-  instance
-    .get(baseUrl)
+  service
+    .getArtists()
     .then(response => {
       const artists = response.data.artists.items.map(item => {
         return {
