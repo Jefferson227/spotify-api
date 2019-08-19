@@ -6,13 +6,15 @@ const hostname = '127.0.0.1';
 const port = 3000;
 
 app.get('/', function(req, res) {
-  //Set the response HTTP header with HTTP status and Content type
+  res.send('Hello this is the Spotify API :)');
+});
+
+app.get('/artists/:name', function(req, res) {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
-  // res.write('Hello World\n');
 
   service
-    .getArtists()
+    .getArtists(req.params.name)
     .then(response => {
       const artists = response.data.artists.items.map(item => {
         return {
