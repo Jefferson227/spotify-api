@@ -35,10 +35,16 @@ app.get('/artists/:name', function(req, res) {
 });
 
 app.get('/artist/:artistId/cities', function(req, res) {
-  const cities = crawler.getCitiesByArtistId(req.params.artistId);
-  console.log(cities);
-  res.write(cities);
-  res.end();
+  crawler
+    .getCitiesByArtistId(req.params.artistId)
+    .then(cities => {
+      res.write(JSON.stringify(cities));
+      res.end();
+    })
+    .catch(err => {
+      console.error(err);
+      res.send('Error on request.');
+    });
 });
 
 //listen for request on port 3000, and as a callback function have the port listened on logged

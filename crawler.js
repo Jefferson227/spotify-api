@@ -1,16 +1,13 @@
-const request = require('request');
 const cheerio = require('cheerio');
-const mongoose = require('fs');
+const rp = require('request-promise');
 
-const getCitiesByArtistId = artistId => {
-  const URL = `https://open.spotify.com/artist/${artistId}/about`;
-  let artist = '';
+const getCitiesByArtistId = async artistId => {
+  const url = `https://open.spotify.com/artist/${artistId}/about`;
+  let cities = {};
 
-  request(URL, function(err, res, body) {
-    if (err) {
-      artist = { error: err };
-    } else {
-      let $ = cheerio.load(body); //loading of complete HTML body
+  await rp(url)
+    .then(html => {
+      let $ = cheerio.load(html);
 
       $('script').each(function(index) {
         if (
@@ -25,17 +22,17 @@ const getCitiesByArtistId = artistId => {
             .replace(/;/gi, '')
             .trim();
 
-          // const json = JSON.parse(scriptText);
-          const json = scriptText;
-          // console.log(json);
-          // artist = JSON.parse(json);
-          artist = json;
+          let artist = JSON.parse(scriptText);
+          cities = artist.insights.cities;
         }
       });
-    }
-  });
+    })
+    .catch(err => {
+      console.error(err);
+      cities = { error: err };
+    });
 
-  return artist;
+  return cities;
 };
 
 module.exports = {
