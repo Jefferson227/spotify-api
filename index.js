@@ -18,9 +18,13 @@ app.get('/artists/:name', function(req, res) {
     .getArtists(req.params.name)
     .then(response => {
       const artists = response.data.artists.items.map(item => {
+        let image = '';
+        if (item.images.length) image = item.images[0].url;
+
         return {
           id: item.id,
-          name: item.name
+          name: item.name,
+          image: image
         };
       });
 
