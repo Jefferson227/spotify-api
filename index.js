@@ -1,5 +1,6 @@
 //Load HTTP module
 const service = require('./service');
+const crawler = require('./crawler');
 const express = require('express');
 const app = express();
 const hostname = '127.0.0.1';
@@ -31,6 +32,13 @@ app.get('/artists/:name', function(req, res) {
       res.write('{}');
       res.end();
     });
+});
+
+app.get('/artist/:artistId/cities', function(req, res) {
+  const cities = crawler.getCitiesByArtistId(req.params.artistId);
+  console.log(cities);
+  res.write(cities);
+  res.end();
 });
 
 //listen for request on port 3000, and as a callback function have the port listened on logged
