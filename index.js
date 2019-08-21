@@ -3,8 +3,7 @@ const service = require('./service');
 const crawler = require('./crawler');
 const express = require('express');
 const app = express();
-const hostname = '127.0.0.1';
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.get('/', function(req, res) {
   res.send('Hello this is the Spotify API :)');
@@ -35,6 +34,6 @@ app.get('/artist/:artistId/cities', function(req, res) {
 });
 
 //listen for request on port 3000, and as a callback function have the port listened on logged
-app.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+app.listen(port, () => {
+  console.log(`Server running on port ${port}.`);
 });
