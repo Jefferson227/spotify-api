@@ -11,30 +11,14 @@ app.get('/', function(req, res) {
 });
 
 app.get('/artists/:name', function(req, res) {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-
   service
     .getArtists(req.params.name)
-    .then(response => {
-      const artists = response.data.artists.items.map(item => {
-        let image = '';
-        if (item.images.length) image = item.images[0].url;
-
-        return {
-          id: item.id,
-          name: item.name,
-          image: image
-        };
-      });
-
+    .then(artists => {
       res.write(JSON.stringify(artists));
       res.end();
     })
     .catch(err => {
-      console.error(`There was an error during the API call: ${err}`);
-      res.write('{}');
-      res.end();
+      res.send(`Error on request: ${err.error}`);
     });
 });
 
@@ -46,8 +30,7 @@ app.get('/artist/:artistId/cities', function(req, res) {
       res.end();
     })
     .catch(err => {
-      console.error(err);
-      res.send('Error on request.');
+      res.send(`Error on request: ${err.error}`);
     });
 });
 

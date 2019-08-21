@@ -12,12 +12,31 @@ const instance = axios.create({
   headers: { Authorization: `Bearer ${token}` }
 });
 
-const getArtists = name => {
+const getArtists = async name => {
   const queryString = 'q={name}&type=artist';
   const searchTerm = queryString.replace('{name}', name);
   const apiUrl = `${baseUrl}${searchTerm}`;
 
-  return instance.get(apiUrl);
+  let artists = [];
+  await instance
+    .get(apiUrl)
+    .then(response => {
+      artists = response.data.artists.items.map(item => {
+        let image = '';
+        if (item.images.length) image = item.images[0].url;
+
+        return {
+          id: item.id,
+          name: item.name,
+          image: image
+        };
+      });
+    })
+    .catch(err => {
+      artists = { error: err };
+    });
+
+  return artists;
 };
 
 module.exports = {
