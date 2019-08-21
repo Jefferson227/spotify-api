@@ -10,9 +10,9 @@ app.get('/', function(req, res) {
   res.send('Hello this is the Spotify API :)');
 });
 
-app.get('/artists/:name', function(req, res) {
+app.get('/artists/:name/:accessToken', function(req, res) {
   service
-    .getArtists(req.params.name)
+    .getArtists(req.params.name, req.params.accessToken)
     .then(artists => {
       res.write(JSON.stringify(artists));
       res.end();
