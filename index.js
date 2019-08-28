@@ -26,14 +26,17 @@ app.get('/artists/:name/:accessToken', function(req, res) {
 });
 
 app.get('/artist/:artistId/cities', function(req, res) {
+  res.status(200);
+
   crawler
     .getCitiesByArtistId(req.params.artistId)
     .then(cities => {
       res.write(JSON.stringify(cities));
       res.end();
     })
-    .catch(err => {
-      res.send(`Error on request: ${err.error}`);
+    .catch(error => {
+      res.status(400);
+      res.send(JSON.stringify(error));
     });
 });
 

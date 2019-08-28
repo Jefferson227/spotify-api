@@ -3,7 +3,11 @@ const rp = require('request-promise');
 
 const getCitiesByArtistId = async artistId => {
   const url = `https://open.spotify.com/artist/${artistId}/about`;
-  let cities = {};
+  let response = {
+    hasError: false,
+    errorMessage: '',
+    data: []
+  };
 
   await rp(url)
     .then(html => {
@@ -23,16 +27,22 @@ const getCitiesByArtistId = async artistId => {
             .trim();
 
           let artist = JSON.parse(scriptText);
-          cities = artist.insights.cities;
+          response.data = artist.insights.cities;
         }
       });
     })
-    .catch(err => {
-      console.error(err);
-      cities = { error: err };
+    .catch(() => {
+      response = {
+        hasError: true,
+        errorMessage:
+          'An error has occurred when tried to get the cities for this artist.',
+        data: []
+      };
+
+      throw response;
     });
 
-  return cities;
+  return response;
 };
 
 module.exports = {
