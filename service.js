@@ -11,11 +11,16 @@ const getArtists = async (name, accessToken) => {
     headers: { Authorization: `Bearer ${accessToken}` }
   });
 
-  let artists = [];
+  let response = {
+    hasError: false,
+    errorMessage: '',
+    data: []
+  };
+
   await instance
     .get(apiUrl)
-    .then(response => {
-      artists = response.data.artists.items.map(item => {
+    .then(res => {
+      response.data = res.data.artists.items.map(item => {
         let image = '';
         if (item.images.length) image = item.images[0].url;
 
@@ -27,10 +32,18 @@ const getArtists = async (name, accessToken) => {
       });
     })
     .catch(err => {
-      artists = { error: err };
+      const { message } = err;
+
+      response = {
+        hasError: true,
+        errorMessage: message,
+        data: []
+      };
+
+      throw response;
     });
 
-  return artists;
+  return response;
 };
 
 module.exports = {

@@ -10,14 +10,18 @@ app.get('/', function(req, res) {
 });
 
 app.get('/artists/:name/:accessToken', function(req, res) {
+  res.status(200);
+
   service
     .getArtists(req.params.name, req.params.accessToken)
     .then(artists => {
       res.write(JSON.stringify(artists));
       res.end();
     })
-    .catch(err => {
-      res.send(`Error on request: ${err.error}`);
+    .catch(error => {
+      res.status(400);
+      res.write(JSON.stringify(error));
+      res.end();
     });
 });
 
