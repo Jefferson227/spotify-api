@@ -5,6 +5,11 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  return next();
+});
+
 app.get('/', function(req, res) {
   res.send('Hello this is the Spotify API :)');
 });
