@@ -14,11 +14,11 @@ app.get('/', function(req, res) {
   res.send('Hello this is the Spotify API :)');
 });
 
-app.get('/artists/:name/:accessToken', function(req, res) {
+app.get('/artists/:name', function(req, res) {
   res.status(200);
 
   service
-    .getArtists(req.params.name, req.params.accessToken)
+    .getArtists(req.params.name)
     .then(artists => {
       res.write(JSON.stringify(artists));
       res.end();
