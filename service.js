@@ -3,9 +3,21 @@ const baseUrl = 'https://api.spotify.com/v1/search?';
 const accessTokenUrl = 'https://accounts.spotify.com/api/token';
 const ACCESS_TOKEN_ERROR = 'ACCESS_TOKEN_ERROR';
 
+const isTokenExpired = date => {
+  if (!date || !process.env.ACCESS_TOKEN) return true;
+
+  const now = new Date();
+  const tokenDate = new Date(date);
+  const timeDifference = (now.getTime() - tokenDate.getTime()) / 1000 / 60;
+
+  return timeDifference > 30;
+};
+
 const getAccessToken = async () => {
   let accessToken = process.env.ACCESS_TOKEN;
-  if (accessToken && accessToken !== ACCESS_TOKEN_ERROR) return accessToken;
+  let isExpired = isTokenExpired(process.env.ACCESS_TOKEN_DATE);
+  if (accessToken && accessToken !== ACCESS_TOKEN_ERROR && !isExpired)
+    return accessToken;
 
   const clientId = 'a81a51cc73e44dc6ae7842098623f7da';
   const clientSecret = '207783d7180f4c71860cef96578ff3a7';
@@ -23,6 +35,7 @@ const getAccessToken = async () => {
     })
     .then(res => {
       process.env.ACCESS_TOKEN = res.data['access_token'];
+      process.env.ACCESS_TOKEN_DATE = new Date();
     })
     .catch(() => {
       process.env.ACCESS_TOKEN = ACCESS_TOKEN_ERROR;
