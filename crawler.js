@@ -27,7 +27,10 @@ const getCitiesByArtistId = async artistId => {
             .trim();
 
           let artist = JSON.parse(scriptText);
-          response.data = artist.insights.cities;
+          response.data = {
+            cities: artist.insights.cities,
+            monthlyListeners: artist.insights.monthly_listeners
+          };
         }
       });
     })
