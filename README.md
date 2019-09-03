@@ -1,6 +1,6 @@
 # About
 
-This is an application writted in Node.js/Express that gets data from the Spotify API.
+This is an application written in Node.js/Express that gets data from the Spotify API.
 
 ## Endpoints
 
