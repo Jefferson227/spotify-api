@@ -45,6 +45,22 @@ app.get('/artist/:artistId/cities', function(req, res) {
     });
 });
 
+app.get('/artist/:artistId', function(req, res) {
+  res.status(200);
+
+  service
+    .getArtistById(req.params.artistId)
+    .then(artist => {
+      res.write(JSON.stringify(artist));
+      res.end();
+    })
+    .catch(error => {
+      res.status(400);
+      res.write(JSON.stringify(error));
+      res.end();
+    });
+});
+
 //listen for request on port 3000, and as a callback function have the port listened on logged
 app.listen(port, () => {
   console.log(`Server running on port ${port}.`);

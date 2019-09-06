@@ -1,5 +1,5 @@
 const axios = require('axios');
-const baseUrl = 'https://api.spotify.com/v1/search?';
+const baseUrl = 'https://api.spotify.com/v1';
 const accessTokenUrl = 'https://accounts.spotify.com/api/token';
 const ACCESS_TOKEN_ERROR = 'ACCESS_TOKEN_ERROR';
 
@@ -46,7 +46,7 @@ const getAccessToken = async () => {
 
 const getArtists = async name => {
   const accessToken = await getAccessToken();
-  const queryString = 'q={name}&type=artist';
+  const queryString = '/search?q={name}&type=artist';
   const searchTerm = queryString.replace('{name}', name);
   const apiUrl = `${baseUrl}${searchTerm}`;
 
@@ -90,6 +90,51 @@ const getArtists = async name => {
   return response;
 };
 
+const getArtistById = async id => {
+  const accessToken = await getAccessToken();
+  const queryString = `/artists/${id}`;
+  const apiUrl = `${baseUrl}${queryString}`;
+  console.log(apiUrl);
+
+  const instance = axios.create({
+    baseURL: baseUrl,
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+
+  let response = {
+    hasError: false,
+    errorMessage: '',
+    data: []
+  };
+
+  await instance
+    .get(apiUrl)
+    .then(res => {
+      const artist = res.data;
+      const image = artist.images.length ? artist.images[0].url : '';
+
+      response.data = {
+        id: artist.id,
+        name: artist.name,
+        image: image
+      };
+    })
+    .catch(err => {
+      const { message } = err;
+
+      response = {
+        hasError: true,
+        errorMessage: message,
+        data: []
+      };
+
+      throw response;
+    });
+
+  return response;
+};
+
 module.exports = {
-  getArtists
+  getArtists,
+  getArtistById
 };
