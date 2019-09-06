@@ -93,7 +93,6 @@ const getArtistById = async id => {
   const accessToken = await getAccessToken();
   const queryString = `/artists/${id}`;
   const apiUrl = `${baseUrl}${queryString}`;
-  console.log(apiUrl);
 
   const instance = axios.create({
     baseURL: baseUrl,
