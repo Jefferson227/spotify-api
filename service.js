@@ -65,8 +65,7 @@ const getArtists = async name => {
     .get(apiUrl)
     .then(res => {
       response.data = res.data.artists.items.map(item => {
-        let image = '';
-        if (item.images.length) image = item.images[0].url;
+        const image = item.images.length ? item.images[0].url : '';
 
         return {
           id: item.id,
